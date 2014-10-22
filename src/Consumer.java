@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaapplication32;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,22 +13,20 @@ import java.util.Set;
  * @author user
  * @param <T>
  */
-public class Producer<T> extends Thread {
+public class Consumer<T> extends Thread {
 
     private final MySTMStack<T> buffer;
-    private T item;
-    private final MyItemGenerator<T> generator;
+    T item;
     private final Set<T> set;
-    private int count;
+    private final int count;
 
     /**
      *
      * @param buffer
-     * @param generator
+     * @param count
      */
-    public Producer(MySTMStack<T> buffer, MyItemGenerator<T> generator, int count) {
+    public Consumer(MySTMStack<T> buffer, int count) {
         this.buffer = buffer;
-        this.generator = generator;
         this.set = new HashSet<>();
         this.count = count;
     }
@@ -39,10 +37,10 @@ public class Producer<T> extends Thread {
     @Override
     public void run() {
         for (int i = 0; i < count; i++) {
-            item = generator.generate();
+
+            item = buffer.pop();
             set.add(item);
-            buffer.push(item);
-        }
+       }
     }
 
     /**

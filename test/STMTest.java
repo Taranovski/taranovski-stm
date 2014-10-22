@@ -3,14 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+
 
 import java.util.HashSet;
 import java.util.Set;
-import javaapplication32.Consumer;
-import javaapplication32.MyIntegerGenerator;
-import javaapplication32.MySTMStack;
-import javaapplication32.Producer;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
