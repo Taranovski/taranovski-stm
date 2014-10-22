@@ -7,7 +7,6 @@ package javaapplication32;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.multiverse.api.StmUtils;
 
 /**
  *
@@ -19,11 +18,12 @@ public class Consumer<T> extends Thread {
     private final MySTMStack<T> buffer;
     T item;
     private final Set<T> set;
-    private int count;
+    private final int count;
 
     /**
      *
      * @param buffer
+     * @param count
      */
     public Consumer(MySTMStack<T> buffer, int count) {
         this.buffer = buffer;
@@ -38,16 +38,9 @@ public class Consumer<T> extends Thread {
     public void run() {
         for (int i = 0; i < count; i++) {
 
-            StmUtils.atomic(new Runnable() {
-                @Override
-                public void run() {
-                    item = buffer.pop();
-                    set.add(item);
-                    
-                }
-            });
-
-        }
+            item = buffer.pop();
+            set.add(item);
+       }
     }
 
     /**

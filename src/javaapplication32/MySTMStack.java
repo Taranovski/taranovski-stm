@@ -47,7 +47,7 @@ public class MySTMStack<T> {
         StmUtils.atomic(new Runnable() {
             @Override
             public void run() {
-                head.atomicCompareAndSet(head.get(), new Node<>(item, head.get()));
+                head.set(new Node<>(item, head.get()));
                 size.increment();
             }
         });
@@ -57,9 +57,10 @@ public class MySTMStack<T> {
         return StmUtils.atomic(new Callable<T>() {
             @Override
             public T call() throws Exception {
-                if (size.get() != 0 & head != null) {
-                    T item = head.get().getItem();
-                    head.atomicCompareAndSet(head.get(), head.get().getNext());
+                if (size.get() != 0 & head.get() != null) {
+                    Node<T> node = head.get();
+                    T item = node.getItem();
+                    head.set(node.getNext());
                     size.decrement();
                     return item;
                 } else {

@@ -7,7 +7,6 @@ package javaapplication32;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.multiverse.api.StmUtils;
 
 /**
  *
@@ -40,14 +39,9 @@ public class Producer<T> extends Thread {
     @Override
     public void run() {
         for (int i = 0; i < count; i++) {
-            StmUtils.atomic(new Runnable() {
-                @Override
-                public void run() {
-                    item = generator.generate();
-                    set.add(item);
-                    buffer.push(item);
-                }
-            });
+            item = generator.generate();
+            set.add(item);
+            buffer.push(item);
         }
     }
 
