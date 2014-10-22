@@ -5,6 +5,7 @@
  */
 package javaapplication32;
 
+import java.util.concurrent.Callable;
 import org.multiverse.api.StmUtils;
 import org.multiverse.api.references.TxnInteger;
 import org.multiverse.api.references.TxnRef;
@@ -17,7 +18,7 @@ import org.multiverse.api.references.TxnRef;
 public class MySTMStack<T> {
 
     private TxnInteger size = StmUtils.newTxnInteger(0);
-    private TxnRef<Node<T>> head = null;
+    private TxnRef<Node<T>> head = StmUtils.newTxnRef(null);
 
     private static final class Node<T> {
 
@@ -43,22 +44,30 @@ public class MySTMStack<T> {
     }
 
     public void push(final T item) {
-
-        head.atomicCompareAndSet(head, StmUtils.newTxnRef(new Node<T>(item, head.get())));
-        size++;
-
+        StmUtils.atomic(new Runnable() {
+            @Override
+            public void run() {
+                head.atomicCompareAndSet(head.get(), new Node<>(item, head.get()));
+                size.increment();
+            }
+        });
     }
 
     public T pop() {
+        return StmUtils.atomic(new Callable<T>() {
+            @Override
+            public T call() throws Exception {
+                if (size.get() != 0 & head != null) {
+                    T item = head.get().getItem();
+                    head.atomicCompareAndSet(head.get(), head.get().getNext());
+                    size.decrement();
+                    return item;
+                } else {
+                    return null;
+                }
+            }
+        });
 
-        if (size != 0 & head != null) {
-            T item = head.getItem();
-            head = head.getNext();
-            size--;
-            return item;
-        } else {
-            return null;
-        }
     }
 
 }

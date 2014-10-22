@@ -46,10 +46,8 @@ public class Producer<T> extends Thread {
                     item = generator.generate();
                     set.add(item);
                     buffer.push(item);
-                    
                 }
             });
-
         }
     }
 
